@@ -27,6 +27,24 @@ type MangadexCover struct {
 	UpdatesAt   string  `json:"updatedAt,omitempty"`
 	Version     float32 `json:"version,omitempty"`
 }
+type MangadexChapter struct {
+	Description string  `json:"description,omitempty"`
+	Volume      string  `json:"volume,omitempty"`
+	FileName    string  `json:"fileName,omitempty"`
+	Locale      string  `json:"locale,omitempty"`
+	CreatedAt   string  `json:"createdAt,omitempty"`
+	UpdatesAt   string  `json:"updatedAt,omitempty"`
+	Version     float32 `json:"version,omitempty"`
+}
+type MangadexPage struct {
+	Description string  `json:"description,omitempty"`
+	Volume      string  `json:"volume,omitempty"`
+	FileName    string  `json:"fileName,omitempty"`
+	Locale      string  `json:"locale,omitempty"`
+	CreatedAt   string  `json:"createdAt,omitempty"`
+	UpdatesAt   string  `json:"updatedAt,omitempty"`
+	Version     float32 `json:"version,omitempty"`
+}
 
 // init set an call the login and creates a Mangadex object
 func (obj Mangadex) init() (Mangadex, error) {
@@ -74,4 +92,34 @@ func (mClient *Mangadex) getMangas() (*m.MangaList, error) {
 		}
 	}
 	return ml, nil
+}
+
+func (mClient *Mangadex) getchapters(id string) {
+	v := url.Values{}
+	v.Set("limit", "10")
+	v.Set("offset", "0")
+	v.Set("translatedLanguage[]", "es")
+	v.Add("translatedLanguage[]", "en")
+	v.Add("translatedLanguage[]", "fr")
+	v.Set("order[createdAt]", "asc")
+	v.Add("order[updatedAt]", "asc")
+	v.Add("order[publishAt]", "asc")
+	v.Add("order[readableAt]", "asc")
+	v.Add("order[volume]", "asc")
+	v.Add("order[chapter]", "asc")
+	v.Set("contentRating[]", "safe")
+	v.Add("contentRating[]", "suggestive")
+	v.Add("contentRating[]", "erotica")
+	//v.Add("contentRating[]", "pornographic")
+	//v.Set("includeFutureUpdates", "1")
+	cl, err := mClient.client.Chapter.GetMangaChapters(id, v)
+	if err != nil {
+		return //&m.MangaList{}, err
+	}
+	for _, chapter := range cl.Data {
+		fmt.Printf("%v - %v - %v \n", chapter.Attributes.Title, chapter.Attributes.Volume, chapter.Attributes.Chapter)
+	}
+}
+
+func (mClient *Mangadex) getPages() {
 }

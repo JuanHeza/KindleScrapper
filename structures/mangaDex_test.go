@@ -25,5 +25,21 @@ func TestMangadex_getMangas(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected Error %v", err)
 	}
-	t.Log(ml)
+	t.Log(ml.Data[0].ID)
+}
+
+func TestMangadex_getchapters(t *testing.T) {
+	t.Setenv("MANGADEX_USER", "jk_heza")
+	t.Setenv("MANGADEX_PASS", "zocoloco")
+	manga, err := Mangadex{}.init()
+	if err != nil {
+		t.Fatalf("Unexpected Error %v", err)
+	}
+	ml, err := manga.getMangas()
+	if err != nil {
+		t.Fatalf("Unexpected Error %v", err)
+	}
+	for _, m := range ml.Data {
+		manga.getchapters(m.ID)
+	}
 }
